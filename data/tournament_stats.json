@@ -1,0 +1,32 @@
+{
+  "Argentina": {
+    "matches": 7,
+    "wins": 6,
+    "draws": 1,
+    "losses": 0,
+    "goals_scored": 14,
+    "goals_conceded": 5,
+    "possession": 56,
+    "shots_per_game": 15.4,
+    "shots_on_target": 6.2,
+    "pass_accuracy": 88,
+    "assists": 10,
+    "xg": 12.8,
+    "xa": 9.5
+  },
+  "Spain": {
+    "matches": 7,
+    "wins": 5,
+    "draws": 2,
+    "losses": 0,
+    "goals_scored": 13,
+    "goals_conceded": 4,
+    "possession": 61,
+    "shots_per_game": 14.7,
+    "shots_on_target": 5.8,
+    "pass_accuracy": 91,
+    "assists": 9,
+    "xg": 11.9,
+    "xa": 10.1
+  }
+}
