@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import PredictionCards from "@/components/PredictionCards";
+import ActualResult from "@/components/ActualResult";
 import ScorePrediction from "@/components/ScorePrediction";
 import PenaltyPrediction from "@/components/PenaltyPrediction";
 import ConfidenceCard from "@/components/ConfidenceCard";
@@ -17,7 +18,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const API_BASE = "http://127.0.0.1:8000";
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
     fetch(`${API_BASE}/prediction`)
       .then(res => {
@@ -89,6 +90,7 @@ export default function Home() {
 
         <section className="space-y-6 mb-14">
           <PredictionCards prediction={prediction} />
+          <ActualResult prediction={prediction} />
           <ScorePrediction prediction={prediction} />
           <PenaltyPrediction prediction={prediction} />
         </section>
@@ -107,4 +109,4 @@ export default function Home() {
       </div>
     </main>
   );
-}
+}// trigger fresh deploy
