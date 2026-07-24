@@ -1,14 +1,16 @@
 """
-Prediction Engine v4
+Prediction Engine v6
 
 Responsible for football match prediction calculations.
 Includes:
 - Match probability
-- Score prediction
+- Score prediction (Poisson distribution model)
 - Extra time possibility
 - Penalty shootout projection
 - Team profile ratings (radar chart metrics)
 """
+
+import math
 
 
 def calculate_attack_rating(team):
@@ -43,15 +45,34 @@ def calculate_confidence(team1_rating, team2_rating):
     return min(90, max(50, confidence))
 
 
-def predict_scores(team1_rating, team2_rating):
-    difference = team1_rating - team2_rating
+def poisson_pmf(k, lam):
+    return (lam ** k) * math.exp(-lam) / math.factorial(k)
 
-    if difference > 1:
-        scores = {"2-1": 18, "1-0": 14, "2-0": 10, "1-1": 12}
-    elif difference < -1:
-        scores = {"1-2": 18, "0-1": 14, "0-2": 10, "1-1": 12}
-    else:
-        scores = {"1-1": 16, "2-1": 12, "1-2": 12, "0-0": 10}
+
+def predict_scores(spain, argentina):
+    """
+    Uses each team's xG-per-game as the expected goals rate (lambda)
+    for a Poisson distribution, then builds a probability matrix
+    over realistic scorelines (0-5 goals per team).
+    """
+    lambda_spain = spain["xg"] / spain["matches"]
+    lambda_argentina = argentina["xg"] / argentina["matches"]
+
+    max_goals = 5
+    matrix = {}
+
+    for s in range(max_goals + 1):
+        for a in range(max_goals + 1):
+            prob = poisson_pmf(s, lambda_spain) * poisson_pmf(a, lambda_argentina)
+            matrix[f"{s}-{a}"] = prob
+
+    total = sum(matrix.values())
+
+    top_scores = sorted(matrix.items(), key=lambda item: item[1], reverse=True)[:4]
+    scores = {
+        score: round((prob / total) * 100, 1)
+        for score, prob in top_scores
+    }
 
     most_likely = max(scores, key=scores.get)
 
@@ -75,7 +96,6 @@ def predict_penalties(spain_rating, argentina_rating):
 
 
 # --- Team profile ratings (used by RadarAnalysis) ---
-# All metrics scaled to roughly 0-100 so they can be plotted together.
 
 def calculate_attack_profile(team):
     xg_per_game = team["xg"] / team["matches"]
@@ -165,7 +185,7 @@ def predict_match(argentina, spain):
         "extra_time_probability": extra_time_probability,
         "penalty_shootout_probability": penalty_probability,
         "penalty_prediction": penalties,
-        "score_prediction": predict_scores(argentina_rating, spain_rating),
+        "score_prediction": predict_scores(spain, argentina),
         "confidence": calculate_confidence(argentina_rating, spain_rating),
         "argentina_rating": round(argentina_rating, 2),
         "spain_rating": round(spain_rating, 2),
