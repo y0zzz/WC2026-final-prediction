@@ -1,6 +1,6 @@
 # 🏆 WC2026 Final Predictor
 
-> AI-powered football analytics dashboard predicting the FIFA World Cup 2026 Final matchup between Spain and Argentina — with probability modeling, score simulation, and explainable AI insights.
+An AI-powered football analytics engine that models the FIFA World Cup 2026 Final matchup using team performance statistics — built and run ahead of the Spain vs. Argentina Final, then evaluated against the actual result.
 
 ![Status](https://img.shields.io/badge/status-active-success)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
@@ -31,9 +31,9 @@
 
 ## Overview
 
-WC2026 Final Predictor combines statistical modeling, football performance metrics, and probability simulation to forecast the outcome of the World Cup 2026 Final — not just *who wins*, but *why*, through interpretable analytics and AI-generated match reasoning.
+WC2026 Final Predictor is a statistical prediction engine that models match outcomes — win/draw/loss probability, score distribution, and penalty shootout odds — from team performance data (xG, xA, possession, form).
 
-Now that the tournament has concluded, the dashboard also compares the model's predictions against the actual final result — Spain 1–0 Argentina (AET) — turning it into a genuine model-evaluation showcase, not just a static forecast.
+The model was run before the 2026 Final between Spain and Argentina. Now that the match has been played, the dashboard also shows the actual result (Spain 1–0 Argentina, AET) alongside the model's original prediction, so you can see exactly how the forecast held up against reality.
 
 ## 📸 Screenshots
 
