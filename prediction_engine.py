@@ -1,10 +1,10 @@
 """
-Prediction Engine v6
+Prediction Engine v7
 
 Responsible for football match prediction calculations.
 Includes:
 - Match probability
-- Score prediction (Poisson distribution model)
+- Score prediction (Poisson distribution, tied to overall team rating)
 - Extra time possibility
 - Penalty shootout projection
 - Team profile ratings (radar chart metrics)
@@ -49,14 +49,17 @@ def poisson_pmf(k, lam):
     return (lam ** k) * math.exp(-lam) / math.factorial(k)
 
 
-def predict_scores(spain, argentina):
+def predict_scores(spain_rating, argentina_rating):
     """
-    Uses each team's xG-per-game as the expected goals rate (lambda)
-    for a Poisson distribution, then builds a probability matrix
-    over realistic scorelines (0-5 goals per team).
+    Uses each team's overall rating (the same rating driving win/draw/loss)
+    to set Poisson expected-goals rates, so the score prediction can never
+    contradict the win probability model.
     """
-    lambda_spain = spain["xg"] / spain["matches"]
-    lambda_argentina = argentina["xg"] / argentina["matches"]
+    average_rating = (spain_rating + argentina_rating) / 2
+    base_goal_rate = 1.35  # roughly the historical average goals per team in a match
+
+    lambda_spain = base_goal_rate * (spain_rating / average_rating)
+    lambda_argentina = base_goal_rate * (argentina_rating / average_rating)
 
     max_goals = 5
     matrix = {}
@@ -185,7 +188,7 @@ def predict_match(argentina, spain):
         "extra_time_probability": extra_time_probability,
         "penalty_shootout_probability": penalty_probability,
         "penalty_prediction": penalties,
-        "score_prediction": predict_scores(spain, argentina),
+        "score_prediction": predict_scores(spain_rating, argentina_rating),
         "confidence": calculate_confidence(argentina_rating, spain_rating),
         "argentina_rating": round(argentina_rating, 2),
         "spain_rating": round(spain_rating, 2),
