@@ -1,0 +1,12 @@
+{
+  "Spain": [
+    { "name": "Mikel Oyarzabal", "position": "Forward", "goals": 4, "assists": 0 },
+    { "name": "Ferran Torres", "position": "Forward", "goals": 1, "assists": 0, "note": "Scored the winning goal in the Final (106')" },
+    { "name": "Mikel Merino", "position": "Midfielder", "goals": 1, "assists": 0 },
+    { "name": "Pedro Porro", "position": "Defender", "goals": 1, "assists": 1, "note": "Assisted the winning goal in the Final" }
+  ],
+  "Argentina": [
+    { "name": "Lionel Messi", "position": "Forward", "goals": 8, "assists": 1, "note": "Became the World Cup's all-time leading scorer during the tournament" },
+    { "name": "Enzo Fernández", "position": "Midfielder", "goals": 1, "assists": 0, "note": "Sent off in the Final" }
+  ]
+}

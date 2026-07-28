@@ -16,17 +16,33 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def load_json_safe(path, fallback):
+    """Load a JSON file, or return a fallback value if the file is missing/broken,
+    so a single missing data file can't crash the whole server."""
+    try:
+        with open(path) as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Warning: couldn't load {path} ({e}). Using fallback data.")
+        return fallback
+
 # Load tournament data
-with open("data/tournament_stats.json") as file:
-    teams = json.load(file)
+teams = load_json_safe("data/tournament_stats.json", {})
 
 # Load actual final result
-with open("data/actual_result.json") as file:
-    actual_result = json.load(file)
+actual_result = load_json_safe("data/actual_result.json", {
+    "winner": None,
+    "score": None,
+    "result_type": None,
+    "scorer": None,
+    "player_of_the_match": None,
+    "venue": None,
+    "date": None,
+})
 
 # Load player stats
-with open("data/player_stats.json") as file:
-    player_stats = json.load(file)
+player_stats = load_json_safe("data/player_stats.json", {"Spain": [], "Argentina": []})
+
 
 @app.get("/")
 def home():
@@ -40,12 +56,11 @@ def get_teams():
 
 @app.get("/prediction")
 def get_prediction():
-    argentina = teams["Argentina"]
-    spain = teams["Spain"]
-    return predict_match(
-        argentina,
-        spain
-    )
+    argentina = teams.get("Argentina")
+    spain = teams.get("Spain")
+    if not argentina or not spain:
+        return {"error": "Team data not available"}
+    return predict_match(argentina, spain)
 
 @app.get("/actual-result")
 def get_actual_result():
